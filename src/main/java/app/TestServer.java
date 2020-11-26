@@ -1,8 +1,8 @@
-package hello;
+package autotest;
 import io.grpc.*;
 import grpc.*;
 
-public class EchoServer extends EchoServiceGrpc.EchoServiceImplBase {
+public class TestServer extends EchoServiceGrpc.EchoServiceImplBase {
     @Override
     public void echo(EchoRequest request,
                      io.grpc.stub.StreamObserver<EchoResponse> responseObserver) {
@@ -15,7 +15,7 @@ public class EchoServer extends EchoServiceGrpc.EchoServiceImplBase {
     public static void main(String[] args) throws Exception{
         Server server = ServerBuilder
                 .forPort(8080)
-                .addService(new EchoServer()).build();
+                .addService(new TestServer()).build();
         server.start();
         System.out.println("Server started");
         server.awaitTermination();

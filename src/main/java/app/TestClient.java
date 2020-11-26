@@ -1,9 +1,9 @@
-package hello;
+package autotest;
 import grpc.*;
 import io.grpc.*;
 import java.util.Scanner;
 
-public class EchoClient {
+public class TestClient {
     public static void main(String[] args) {
         EchoServiceGrpc.EchoServiceBlockingStub client = createClient("localhost",8080);
         System.out.println("Connected to server");
