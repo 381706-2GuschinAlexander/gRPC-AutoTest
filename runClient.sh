@@ -1,1 +1,1 @@
-mvn exec:java -Dexec.mainClass=autotest.TestClient
+mvn exec:java -Dexec.mainClass=app.autotest.TestClient

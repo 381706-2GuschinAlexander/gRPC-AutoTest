@@ -1,4 +1,4 @@
-package autotest;
+package app.autotest;
 import grpc.*;
 import io.grpc.*;
 import java.util.Scanner;
@@ -20,15 +20,23 @@ public class TestClient {
     private static int requestForm(EchoServiceGrpc.EchoServiceBlockingStub client, String message){
         String[] req = message.trim().split(" ");
 
-        if(req[0].equals("insert")){
-            AddIdRequest request = AddIdRequest.newBuilder().setId(0).setName(req[1]).build();
-            EchoResponse response = client.insert(request);
-            System.out.println("response: "+response.getMessage());
-        } else {
-            EchoRequest request = EchoRequest.newBuilder().setMessage("aaa").build();
-            EchoResponse response = client.echo(request);
-            System.out.println("response: "+response.getMessage());
+        if(req[0].equals("addt") && req.length == 2){
+            AddTestRequest request = AddTestRequest.newBuilder().setId(0).setName(req[1]).build();
+            IdResponse response = client.addtest(request);
+            System.out.println("response: "+ response.getId());
+        } else if (req[0].equals("addq") && req.length == 3){
+            int test_id = -1;
+            try{
+                test_id = Integer.parseInt(req[1]);
+            } catch (Exception e){
+                return 1;
+            }
+            AddQuesRequest request = AddQuesRequest.newBuilder().setId(0).setTestId(test_id).setName(req[2]).build();
+            IdResponse response = client.addques(request);
+            System.out.println("response: "+ response.getId());
         }
+
+
         return 0;
     }
 
