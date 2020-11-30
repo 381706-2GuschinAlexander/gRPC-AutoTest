@@ -34,6 +34,11 @@ public class TestClient {
             AddQuesRequest request = AddQuesRequest.newBuilder().setId(0).setTestId(test_id).setName(req[2]).build();
             IdResponse response = client.addques(request);
             System.out.println("response: "+ response.getId());
+        } else if (req[0].equals("seet")){
+            NullRequest request = NullRequest.newBuilder().build();
+            TestResponse response = client.seetest(request);
+            System.out.println("response: "+ response.getId());
+            
         }
 
 

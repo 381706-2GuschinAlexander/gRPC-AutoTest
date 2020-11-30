@@ -6,4 +6,9 @@ public class Answer{
     int b = 0;
     int c = 0;
     int d = 0;
+
+
+    public final String toString(){
+        return text;
+    }
 }

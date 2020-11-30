@@ -1,6 +1,8 @@
 package app.autotest;
 
+import app.teststruct.Answer;
 import app.teststruct.Question;
+import app.teststruct.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,25 +13,22 @@ import grpc.*;
 public class TestServer extends EchoServiceGrpc.EchoServiceImplBase {
     String log = "";
     Integer global_id = 0;
-    HashMap<Integer, String> test_map;
-    HashMap<Integer, HashMap<Integer, Question>> que_map;
+    HashMap<Integer, Test> test_map;
+    HashMap<Integer, Question> que_map;
     ArrayList<Integer> active_test_id;
 
     TestServer(){
         active_test_id = new ArrayList<Integer>();
-        test_map = new HashMap<Integer, String>();
-        que_map = new HashMap<Integer, HashMap<Integer, Question>>();
+        test_map = new HashMap<Integer, Test>();
+        que_map = new HashMap<Integer, Question>();
     }
-
-
 
     @Override
     public void addtest(AddTestRequest request, io.grpc.stub.StreamObserver<IdResponse> responseObserver){
         int client_id = request.getId();
         int return_id = global_id;
         if(client_id == 0){
-            test_map.put(global_id, request.getName());
-            que_map.put(global_id, new HashMap<Integer, Question>());
+            test_map.put(global_id, new Test(request.getName()));
             global_id++;
         } else {
            return_id = -1;
@@ -44,11 +43,13 @@ public class TestServer extends EchoServiceGrpc.EchoServiceImplBase {
 
     @Override
     public void addques(AddQuesRequest request, io.grpc.stub.StreamObserver<IdResponse> responseObserver) {
+        
         int client_id = request.getId();
         int return_id = -1;
         int test_id = request.getTestId();
         if(client_id == 0 && test_id < global_id){
-            que_map.get(test_id).put(global_id ,new Question(request.getName()));
+            que_map.put(global_id, new Question(request.getName()));
+            test_map.get(test_id).add(global_id);
             return_id = global_id;
             global_id++;
         } else{

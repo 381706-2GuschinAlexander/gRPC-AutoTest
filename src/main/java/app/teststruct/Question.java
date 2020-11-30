@@ -10,4 +10,8 @@ public class Question{
         name = _name;
         variants = new ArrayList<Answer>();
     }
+
+    public final String toString(){
+        return name + variants;
+    }
 }
