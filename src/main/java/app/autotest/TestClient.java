@@ -37,11 +37,11 @@ public class TestClient {
         } else if (req[0].equals("seet")){
             NullRequest request = NullRequest.newBuilder().build();
             TestResponse response = client.seetest(request);
-            System.out.println("response: "+ response.getId());
-            
+            int size = response.getNameCount();
+            for(int i = 0; i < size; ++i){
+                System.out.println("name: " + response.getName(i) + " id: " + response.getTestId(i));
+            }
         }
-
-
         return 0;
     }
 

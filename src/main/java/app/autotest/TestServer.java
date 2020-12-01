@@ -43,7 +43,6 @@ public class TestServer extends EchoServiceGrpc.EchoServiceImplBase {
 
     @Override
     public void addques(AddQuesRequest request, io.grpc.stub.StreamObserver<IdResponse> responseObserver) {
-        
         int client_id = request.getId();
         int return_id = -1;
         int test_id = request.getTestId();
@@ -59,6 +58,18 @@ public class TestServer extends EchoServiceGrpc.EchoServiceImplBase {
         responseObserver.onNext(response);
         responseObserver.onCompleted();
     }    
+
+    @Override
+    public void seetest(NullRequest request, io.grpc.stub.StreamObserver<TestResponse> responseObserver){
+        TestResponse.Builder testbuild = TestResponse.newBuilder();
+        test_map.forEach((k,v)->{
+            testbuild.addTestId(k);
+            testbuild.addName(v.getName());
+        });
+        TestResponse response = testbuild.build();
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
+    }
 
 
 /*    @Override

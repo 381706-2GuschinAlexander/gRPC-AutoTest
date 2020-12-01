@@ -32,8 +32,8 @@ message AddAnswRequest{
 }
 
 message TestResponse{
-    string name = 1;
-    int32 testId = 2;
+    repeated string name = 1;
+    repeated int32 testId = 2;
 }
 
 
@@ -42,5 +42,5 @@ service EchoService{
     rpc addtest(AddTestRequest) returns (IdResponse){}
     rpc addques(AddQuesRequest) returns (IdResponse){}
     rpc addansw(stream AddAnswRequest) returns (IdResponse){}
-    rpc seetest(NullRequest) returns (stream TestResponse){}
+    rpc seetest(NullRequest) returns (TestResponse){}
 }
