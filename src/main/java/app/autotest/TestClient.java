@@ -12,18 +12,18 @@ public class TestClient {
         Scanner console = new Scanner(System.in);
         String message;
         while((message = console.nextLine())!=null){
-            requestForm(client, message);
+            requestForm(client, message, console);
         }
         console.close();
     }
 
-    private static int requestForm(EchoServiceGrpc.EchoServiceBlockingStub client, String message){
+    private static int requestForm(EchoServiceGrpc.EchoServiceBlockingStub client, String message, Scanner console){
         String[] req = message.trim().split(" ");
 
         if(req[0].equals("addt") && req.length == 2){
             AddTestRequest request = AddTestRequest.newBuilder().setId(0).setName(req[1]).build();
             IdResponse response = client.addtest(request);
-            System.out.println("response: "+ response.getId());
+            System.out.println("test id: "+ response.getId());
         } else if (req[0].equals("addq") && req.length == 3){
             int test_id = -1;
             try{
@@ -33,7 +33,7 @@ public class TestClient {
             }
             AddQuesRequest request = AddQuesRequest.newBuilder().setId(0).setTestId(test_id).setName(req[2]).build();
             IdResponse response = client.addques(request);
-            System.out.println("response: "+ response.getId());
+            System.out.println("question id: "+ response.getId());
         } else if (req[0].equals("seet")){
             NullRequest request = NullRequest.newBuilder().build();
             TestResponse response = client.seetest(request);
@@ -41,7 +41,56 @@ public class TestClient {
             for(int i = 0; i < size; ++i){
                 System.out.println("name: " + response.getName(i) + " id: " + response.getTestId(i));
             }
+        } else if (req[0].equals("adda")){
+            int quest_id = -1;
+            try{
+                quest_id = Integer.parseInt(req[1]);
+            } catch (Exception e){
+                return 1;
+            }
+            if(quest_id < 0)
+                return 1;
+
+            System.out.println("Enter number of questions: ");
+            int size = 0;
+            try{
+                size = Integer.parseInt(console.nextLine());
+            } catch (Exception e){
+                return 1;
+            }
+
+            if(size <= 0)
+                return 1;
+            String tmp = "";
+            AddAnswRequest.Builder builder = AddAnswRequest.newBuilder().setId(0).setQuestionId(quest_id);
+            for(int i = 0; i < size; ++i){
+                System.out.println("Enter name");
+                String name;
+                name = console.nextLine();
+                System.out.println("Enter args");
+                tmp = console.nextLine();
+                String[] args = tmp.trim().split(" ");
+                boolean isTrue = true;
+                int pTaken = 0;
+                int pSkiped = 0;
+                try{
+                    isTrue = Boolean.parseBoolean(args[0]);
+                    pTaken = Integer.parseInt(args[1]);
+                    pSkiped = Integer.parseInt(args[2]);
+                } catch (Exception e){
+                    System.out.println("Parse error");
+                    --i;
+                    continue;
+                }
+                builder.addName(name).addIsTrue(isTrue).addPointTaken(pTaken).addPointSkiped(pSkiped);
+            }
+
+            AddAnswRequest request = builder.build();
+            IdResponse response = client.addansw(request);
+            System.out.println("response: "+ response.getId());
         }
+
+
         return 0;
     }
 

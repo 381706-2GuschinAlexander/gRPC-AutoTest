@@ -6,8 +6,8 @@ public class Test{
     String name = "";
     ArrayList<Integer> list_id;
     
-    public Test(String _name){
-        name = _name;
+    public Test(String name){
+        this.name = name;
         list_id = new ArrayList<Integer>();
     }
 

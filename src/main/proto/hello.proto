@@ -26,9 +26,11 @@ message AddQuesRequest{
 
 message AddAnswRequest{
     int32 id = 1;
-    string name = 2;
-    int32 pointc = 3;
-    int32 pointw = 4; 
+    int32 questionId = 6;
+    repeated string name = 2;
+    repeated bool isTrue = 3;
+    repeated int32 pointTaken = 4;
+    repeated int32 pointSkiped = 5;
 }
 
 message TestResponse{
@@ -37,10 +39,9 @@ message TestResponse{
 }
 
 
-
 service EchoService{
     rpc addtest(AddTestRequest) returns (IdResponse){}
     rpc addques(AddQuesRequest) returns (IdResponse){}
-    rpc addansw(stream AddAnswRequest) returns (IdResponse){}
+    rpc addansw(AddAnswRequest) returns (IdResponse){}
     rpc seetest(NullRequest) returns (TestResponse){}
 }

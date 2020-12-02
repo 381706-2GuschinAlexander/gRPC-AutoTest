@@ -23,6 +23,16 @@ public class TestServer extends EchoServiceGrpc.EchoServiceImplBase {
         que_map = new HashMap<Integer, Question>();
     }
 
+    public static void main(String[] args) throws Exception{
+        Server server = ServerBuilder
+                .forPort(8080)
+                .addService(new TestServer()).build();
+        server.start();
+        System.out.println("Server started");
+        server.awaitTermination();
+    }
+
+
     @Override
     public void addtest(AddTestRequest request, io.grpc.stub.StreamObserver<IdResponse> responseObserver){
         int client_id = request.getId();
@@ -57,7 +67,29 @@ public class TestServer extends EchoServiceGrpc.EchoServiceImplBase {
         IdResponse response = IdResponse.newBuilder().setId(return_id).build();
         responseObserver.onNext(response);
         responseObserver.onCompleted();
-    }    
+    }
+
+    @Override
+    public void addansw(AddAnswRequest request, io.grpc.stub.StreamObserver<IdResponse> responseObserver){
+        int client_id = request.getId();
+        int question_id = request.getQuestionId();
+        int return_id = 0;
+        if(client_id != 0 || que_map.containsKey(question_id) == false)
+            return_id = -1;
+        else{
+            int size = request.getNameCount();
+            for(int i = 0; i < size; ++i){
+                String name = request.getName(i);
+                boolean isTrue = request.getIsTrue(i);
+                int pointTaken = request.getPointTaken(i);
+                int pointSkip = request.getPointSkiped(i);
+                que_map.get(question_id).add(new Answer(name,isTrue,pointTaken,pointSkip));
+            }
+        }
+        IdResponse response = IdResponse.newBuilder().setId(0).build();
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
+    }
 
     @Override
     public void seetest(NullRequest request, io.grpc.stub.StreamObserver<TestResponse> responseObserver){
@@ -72,20 +104,4 @@ public class TestServer extends EchoServiceGrpc.EchoServiceImplBase {
     }
 
 
-/*    @Override
-    public void addansw(AddQuesRequest request, io.grpc.stub.StreamObserver<IdResponse> responseObserver) {
-        que_map.forEach((key, hashtable) -> {
-            if(hashtable.containsKey())
-              return_id = 2;9
-        });
-    }*/
-
-    public static void main(String[] args) throws Exception{
-        Server server = ServerBuilder
-                .forPort(8080)
-                .addService(new TestServer()).build();
-        server.start();
-        System.out.println("Server started");
-        server.awaitTermination();
-    }
 }
