@@ -11,6 +11,10 @@ public class Test{
         list_id = new ArrayList<Integer>();
     }
 
+    public ArrayList<Integer> getArray(){
+        return list_id;
+    }
+
     public void add(Integer value){
         list_id.add(value);
     }

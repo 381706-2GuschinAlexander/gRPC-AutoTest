@@ -1,5 +1,6 @@
 package app.autotest;
 
+import app.teststruct.ActiveTest;
 import app.teststruct.Answer;
 import app.teststruct.Question;
 import app.teststruct.Test;
@@ -13,14 +14,15 @@ import grpc.*;
 public class TestServer extends EchoServiceGrpc.EchoServiceImplBase {
     String log = "";
     Integer global_id = 0;
+    Integer test_count = 1;
     HashMap<Integer, Test> test_map;
     HashMap<Integer, Question> que_map;
-    ArrayList<Integer> active_test_id;
+    HashMap<Integer, ActiveTest> active_test;
 
     TestServer(){
-        active_test_id = new ArrayList<Integer>();
         test_map = new HashMap<Integer, Test>();
         que_map = new HashMap<Integer, Question>();
+        active_test = new HashMap<Integer, ActiveTest>();
     }
 
     public static void main(String[] args) throws Exception{
@@ -103,5 +105,24 @@ public class TestServer extends EchoServiceGrpc.EchoServiceImplBase {
         responseObserver.onCompleted();
     }
 
-
+    @Override
+    public void starttest(StartTestRequest request, io.grpc.stub.StreamObserver<IdResponse> responseObserver){
+        int id = request.getTestId();
+        int return_id = -1;
+        if(test_map.containsKey(id) == true){
+            return_id = test_count;
+            ActiveTest new_test = new ActiveTest();
+            ArrayList<Integer> iter = test_map.get(id).getArray();
+            iter.forEach(i -> {
+                System.out.println("added questin");
+                Question tmp = que_map.get(i);
+                new_test.addQuestion(tmp);
+            });
+            active_test.put(test_count, new_test);
+            test_count++;
+        }
+        IdResponse response = IdResponse.newBuilder().setId(id).build();
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
+    }
 }

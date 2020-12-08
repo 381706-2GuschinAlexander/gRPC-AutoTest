@@ -16,4 +16,8 @@ public class Answer{
     public final String toString(){
         return text;
     }
+
+    public int chose(boolean isChosen){
+        return (isChosen == true ? pointTaken : pointSkip);
+    }
 }

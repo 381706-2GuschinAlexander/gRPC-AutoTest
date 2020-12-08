@@ -38,10 +38,25 @@ message TestResponse{
     repeated int32 testId = 2;
 }
 
+message StartTestRequest{
+    int32 testId = 1;
+}
+
+message QuestionRequest{
+    int32 clientId = 1;
+}
+
+message QuestionResponse{
+    string name = 1;
+    repeated string answName = 2;
+    repeated int32 answId = 3;
+}
 
 service EchoService{
     rpc addtest(AddTestRequest) returns (IdResponse){}
     rpc addques(AddQuesRequest) returns (IdResponse){}
     rpc addansw(AddAnswRequest) returns (IdResponse){}
     rpc seetest(NullRequest) returns (TestResponse){}
+    rpc starttest(StartTestRequest) returns (IdResponse){}
+    rpc seeques(QuestionRequest) returns (QuestionResponse){}
 }

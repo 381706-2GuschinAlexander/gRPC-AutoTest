@@ -3,8 +3,10 @@ import grpc.*;
 import io.grpc.*;
 import java.util.Scanner;
 
+import app.teststruct.Question;
+
 public class TestClient {
-    Integer local_id = -1;
+    static Integer local_id = -1;
 
     public static void main(String[] args) {
         EchoServiceGrpc.EchoServiceBlockingStub client = createClient("localhost",8080);
@@ -16,22 +18,25 @@ public class TestClient {
         }
         console.close();
     }
-
+    
     private static int requestForm(EchoServiceGrpc.EchoServiceBlockingStub client, String message, Scanner console){
         String[] req = message.trim().split(" ");
+        
 
         if(req[0].equals("addt") && req.length == 2){
             AddTestRequest request = AddTestRequest.newBuilder().setId(0).setName(req[1]).build();
             IdResponse response = client.addtest(request);
             System.out.println("test id: "+ response.getId());
-        } else if (req[0].equals("addq") && req.length == 3){
+        } else if (req[0].equals("addq") && req.length == 2){
             int test_id = -1;
             try{
                 test_id = Integer.parseInt(req[1]);
             } catch (Exception e){
                 return 1;
             }
-            AddQuesRequest request = AddQuesRequest.newBuilder().setId(0).setTestId(test_id).setName(req[2]).build();
+            System.out.print("Enter question text: ");
+            String ques_text = console.nextLine();
+            AddQuesRequest request = AddQuesRequest.newBuilder().setId(0).setTestId(test_id).setName(ques_text).build();
             IdResponse response = client.addques(request);
             System.out.println("question id: "+ response.getId());
         } else if (req[0].equals("seet")){
@@ -88,6 +93,24 @@ public class TestClient {
             AddAnswRequest request = builder.build();
             IdResponse response = client.addansw(request);
             System.out.println("response: "+ response.getId());
+        } else if (req[0].equals("start")){
+            int test_id = -1;
+            try{
+                test_id = Integer.parseInt(req[1]);
+            } catch (Exception e){
+                return 1;
+            }
+
+            StartTestRequest.Builder builder = StartTestRequest.newBuilder();
+            builder.setTestId(test_id);
+            StartTestRequest request = builder.build();
+            IdResponse response = client.starttest(request);
+            
+            local_id = response.getId();
+            if(local_id != -1){
+                System.out.println(test_id);
+                System.out.println("Test started");
+            }
         }
 
 
