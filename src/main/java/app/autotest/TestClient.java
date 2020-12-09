@@ -56,7 +56,7 @@ public class TestClient {
             if(quest_id < 0)
                 return 1;
 
-            System.out.println("Enter number of questions: ");
+            System.out.println("Enter number of answers: ");
             int size = 0;
             try{
                 size = Integer.parseInt(console.nextLine());
@@ -110,6 +110,19 @@ public class TestClient {
             if(local_id != -1){
                 System.out.println(test_id);
                 System.out.println("Test started");
+            }
+        } else if(req[0].equals("seeq")){
+            QuestionRequest request = QuestionRequest.newBuilder().setClientId(local_id).build();
+            QuestionResponse response = client.seeques(request);
+
+            if(response.getName().equals("null")){
+                System.out.println("Wrong id");
+            } else {
+                System.out.println("Question: " + response.getName());
+                int size = response.getAnswNameCount();
+                for(int i = 0; i < size; ++i){
+                    System.out.println(response.getAnswName(i) + " " + response.getAnswId(i));
+                }
             }
         }
 

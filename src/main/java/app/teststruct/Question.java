@@ -2,7 +2,7 @@ package app.teststruct;
 
 import java.util.ArrayList;
 
-public class Question{
+public final class Question{
     String name = "";
     ArrayList<Answer> variants;
     
@@ -11,12 +11,16 @@ public class Question{
         variants = new ArrayList<Answer>();
     }
 
+    public ArrayList<Answer> getVariants(){
+        return variants;
+    }
+
     public void add(Answer ans){
         variants.add(ans);
     }
 
     public final String toString(){
-        return name + variants;
+        return name;
     }
 
     public int answerQuestion(int[] answ, int size){

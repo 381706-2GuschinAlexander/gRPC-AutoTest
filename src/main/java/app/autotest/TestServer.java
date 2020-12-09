@@ -109,6 +109,7 @@ public class TestServer extends EchoServiceGrpc.EchoServiceImplBase {
     public void starttest(StartTestRequest request, io.grpc.stub.StreamObserver<IdResponse> responseObserver){
         int id = request.getTestId();
         int return_id = -1;
+        //TODO if theare are already active test
         if(test_map.containsKey(id) == true){
             return_id = test_count;
             ActiveTest new_test = new ActiveTest();
@@ -121,7 +122,27 @@ public class TestServer extends EchoServiceGrpc.EchoServiceImplBase {
             active_test.put(test_count, new_test);
             test_count++;
         }
-        IdResponse response = IdResponse.newBuilder().setId(id).build();
+        IdResponse response = IdResponse.newBuilder().setId(return_id).build();
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void seeques(QuestionRequest request, io.grpc.stub.StreamObserver<QuestionResponse> responseObserver){
+        int id = request.getClientId();
+        QuestionResponse.Builder builder = QuestionResponse.newBuilder();
+        if(active_test.containsKey(id) == true){
+            Question tmp = active_test.get(id).peekQuestion();
+            builder.setName(tmp.toString());
+            int k = tmp.getVariants().size();
+            for(int i = 0; i < k; ++i){
+                builder.addAnswName(tmp.getVariants().get(i).toString());
+                builder.addAnswId(i);
+            }
+        } else {
+            builder.setName("null");
+        }
+        QuestionResponse response = builder.build();
         responseObserver.onNext(response);
         responseObserver.onCompleted();
     }
