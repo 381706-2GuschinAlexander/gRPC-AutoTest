@@ -1,6 +1,7 @@
 package app.teststruct;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public final class Question{
     String name = "";
@@ -23,11 +24,17 @@ public final class Question{
         return name;
     }
 
-    public int answerQuestion(int[] answ, int size){
+    public int answerQuestion(ArrayList<Integer> tmp){
         int k = 0, res = 0;
+        ArrayList<Integer> arr = new ArrayList<Integer>(tmp);
+        
+        Collections.sort(arr);
+        
         for(int i = 0; i < variants.size(); ++i){
-            if(k < size && answ[k] == i)
+            if(k < arr.size() && arr.indexOf(k) == i){
                 res += variants.get(i).chose(true);
+                k++;
+            }
             else
                 res += variants.get(i).chose(false);;
         }

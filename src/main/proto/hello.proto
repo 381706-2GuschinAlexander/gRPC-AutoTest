@@ -52,6 +52,11 @@ message QuestionResponse{
     repeated int32 answId = 3;
 }
 
+message AnswerRequest{
+    int32 clientId = 1;
+    repeated int32 answId = 2;
+}
+
 service EchoService{
     rpc addtest(AddTestRequest) returns (IdResponse){}
     rpc addques(AddQuesRequest) returns (IdResponse){}
@@ -59,4 +64,5 @@ service EchoService{
     rpc seetest(NullRequest) returns (TestResponse){}
     rpc starttest(StartTestRequest) returns (IdResponse){}
     rpc seeques(QuestionRequest) returns (QuestionResponse){}
+    rpc answer(AnswerRequest) returns (IdResponse){}
 }

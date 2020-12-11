@@ -1,6 +1,8 @@
 package app.autotest;
 import grpc.*;
 import io.grpc.*;
+
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import app.teststruct.Question;
@@ -124,6 +126,28 @@ public class TestClient {
                     System.out.println(response.getAnswName(i) + " " + response.getAnswId(i));
                 }
             }
+        } else if(req[0].equals("answer")){
+            ArrayList<Integer> array = new ArrayList<Integer>();
+            for(int i = 1; i < req.length; ++i){
+                try{
+                    int tmp = Integer.parseInt(req[i]);
+                    array.add(tmp);
+                } catch (Exception e){
+                    System.out.println("Parse error");
+                    return 1;
+                }
+            }
+
+            AnswerRequest.Builder builder = AnswerRequest.newBuilder();
+            builder.setClientId(local_id);
+            for(int i = 0; i < array.size(); ++i)
+                builder.addAnswId(array.get(i));
+            
+            AnswerRequest request = builder.build();
+
+            IdResponse response = client.answer(request);
+            if(response.getId() != 0)
+                System.out.println("Negative number");
         }
 
 

@@ -133,16 +133,48 @@ public class TestServer extends EchoServiceGrpc.EchoServiceImplBase {
         QuestionResponse.Builder builder = QuestionResponse.newBuilder();
         if(active_test.containsKey(id) == true){
             Question tmp = active_test.get(id).peekQuestion();
-            builder.setName(tmp.toString());
-            int k = tmp.getVariants().size();
-            for(int i = 0; i < k; ++i){
-                builder.addAnswName(tmp.getVariants().get(i).toString());
-                builder.addAnswId(i);
+            if(tmp == null){
+                builder.setName("No question left behind");
+            } else {
+                builder.setName(tmp.toString());
+                int k = tmp.getVariants().size();
+                for(int i = 0; i < k; ++i){
+                    builder.addAnswName(tmp.getVariants().get(i).toString());
+                    builder.addAnswId(i);
+                }
             }
         } else {
             builder.setName("null");
         }
         QuestionResponse response = builder.build();
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
+    }
+
+
+    @Override
+    public void answer(AnswerRequest request, io.grpc.stub.StreamObserver<IdResponse> responseObserver){
+        int size = request.getAnswIdCount();
+        int id = request.getClientId();
+        int return_id = 0;
+
+        if(active_test.containsKey(id) == false || size == 0)
+            return_id = -2;
+        else{
+            ArrayList<Integer> array = new ArrayList<Integer>(size);
+            for(int i = 0; i < size; ++i){
+                int tmp = request.getAnswId(i);
+                if(tmp < 0){
+                    return_id = -1;
+                    break;
+                }
+                array.add(tmp);
+            }
+            if(return_id == 0)
+                active_test.get(id).answerQuestion(array);
+        }
+
+        IdResponse response = IdResponse.newBuilder().setId(return_id).build();
         responseObserver.onNext(response);
         responseObserver.onCompleted();
     }
