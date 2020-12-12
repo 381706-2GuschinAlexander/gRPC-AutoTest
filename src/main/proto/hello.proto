@@ -39,7 +39,8 @@ message TestResponse{
 }
 
 message StartTestRequest{
-    int32 testId = 1;
+    int32 clientId = 1;
+    int32 testId = 2;
 }
 
 message QuestionRequest{
@@ -57,6 +58,14 @@ message AnswerRequest{
     repeated int32 answId = 2;
 }
 
+message FinishRequest{
+    int32 clientId = 1;
+}
+
+message FinishResponse{
+    int32 score = 1;
+}
+
 service EchoService{
     rpc addtest(AddTestRequest) returns (IdResponse){}
     rpc addques(AddQuesRequest) returns (IdResponse){}
@@ -65,4 +74,5 @@ service EchoService{
     rpc starttest(StartTestRequest) returns (IdResponse){}
     rpc seeques(QuestionRequest) returns (QuestionResponse){}
     rpc answer(AnswerRequest) returns (IdResponse){}
+    rpc finish(FinishRequest) returns (FinishResponse){}
 }

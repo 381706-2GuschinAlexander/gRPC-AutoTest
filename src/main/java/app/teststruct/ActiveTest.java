@@ -11,6 +11,10 @@ public class ActiveTest{
         question_que = new ArrayDeque<Question>();
     }
 
+    public int getScore(){
+        return score;
+    }
+
     public void addQuestion(Question q){
         question_que.add(q);
     }

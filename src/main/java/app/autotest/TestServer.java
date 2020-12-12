@@ -108,9 +108,9 @@ public class TestServer extends EchoServiceGrpc.EchoServiceImplBase {
     @Override
     public void starttest(StartTestRequest request, io.grpc.stub.StreamObserver<IdResponse> responseObserver){
         int id = request.getTestId();
+        int client_id = request.getClientId();
         int return_id = -1;
-        //TODO if theare are already active test
-        if(test_map.containsKey(id) == true){
+        if(test_map.containsKey(id) == true && active_test.containsKey(client_id) == false){
             return_id = test_count;
             ActiveTest new_test = new ActiveTest();
             ArrayList<Integer> iter = test_map.get(id).getArray();
@@ -151,7 +151,6 @@ public class TestServer extends EchoServiceGrpc.EchoServiceImplBase {
         responseObserver.onCompleted();
     }
 
-
     @Override
     public void answer(AnswerRequest request, io.grpc.stub.StreamObserver<IdResponse> responseObserver){
         int size = request.getAnswIdCount();
@@ -175,6 +174,21 @@ public class TestServer extends EchoServiceGrpc.EchoServiceImplBase {
         }
 
         IdResponse response = IdResponse.newBuilder().setId(return_id).build();
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void finish(FinishRequest request, io.grpc.stub.StreamObserver<FinishResponse> responseObserver){
+        int client_id = request.getClientId();
+        int score = Integer.MIN_VALUE;
+        if(active_test.containsKey(client_id) == true){
+            active_test.get(client_id).EarlyFinish();
+            score = active_test.get(client_id).getScore();
+            active_test.remove(client_id);
+        }
+
+        FinishResponse response = FinishResponse.newBuilder().setScore(score).build();
         responseObserver.onNext(response);
         responseObserver.onCompleted();
     }

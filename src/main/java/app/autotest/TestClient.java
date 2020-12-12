@@ -105,6 +105,7 @@ public class TestClient {
 
             StartTestRequest.Builder builder = StartTestRequest.newBuilder();
             builder.setTestId(test_id);
+            builder.setClientId(local_id);
             StartTestRequest request = builder.build();
             IdResponse response = client.starttest(request);
             
@@ -113,7 +114,7 @@ public class TestClient {
                 System.out.println(test_id);
                 System.out.println("Test started");
             }
-        } else if(req[0].equals("seeq")){
+        } else if (req[0].equals("seeq")){
             QuestionRequest request = QuestionRequest.newBuilder().setClientId(local_id).build();
             QuestionResponse response = client.seeques(request);
 
@@ -126,7 +127,7 @@ public class TestClient {
                     System.out.println(response.getAnswName(i) + " " + response.getAnswId(i));
                 }
             }
-        } else if(req[0].equals("answer")){
+        } else if (req[0].equals("answer")){
             ArrayList<Integer> array = new ArrayList<Integer>();
             for(int i = 1; i < req.length; ++i){
                 try{
@@ -148,6 +149,14 @@ public class TestClient {
             IdResponse response = client.answer(request);
             if(response.getId() != 0)
                 System.out.println("Negative number");
+        } else if(req[0].equals("finish")){
+            FinishRequest request = FinishRequest.newBuilder().setClientId(local_id).build();
+            FinishResponse response = client.finish(request);
+            int score = response.getScore();
+            if(score == Integer.MIN_VALUE)
+                System.out.println("None active test");
+            else
+                System.out.println("Your score: " + score);
         }
 
 
