@@ -46,7 +46,7 @@ public class TestServer extends EchoServiceGrpc.EchoServiceImplBase {
            return_id = -1;
         }
 
-        System.out.println(test_map);
+       //System.out.println(test_map);
 
         IdResponse response = IdResponse.newBuilder().setId(return_id).build();
         responseObserver.onNext(response);
@@ -58,7 +58,7 @@ public class TestServer extends EchoServiceGrpc.EchoServiceImplBase {
         int client_id = request.getId();
         int return_id = -1;
         int test_id = request.getTestId();
-        if(client_id == 0 && test_id < global_id){
+        if(client_id == 0 && test_map.containsKey(test_id) == true){
             que_map.put(global_id, new Question(request.getName()));
             test_map.get(test_id).add(global_id);
             return_id = global_id;
@@ -88,7 +88,7 @@ public class TestServer extends EchoServiceGrpc.EchoServiceImplBase {
                 que_map.get(question_id).add(new Answer(name,isTrue,pointTaken,pointSkip));
             }
         }
-        IdResponse response = IdResponse.newBuilder().setId(0).build();
+        IdResponse response = IdResponse.newBuilder().setId(return_id).build();
         responseObserver.onNext(response);
         responseObserver.onCompleted();
     }
@@ -115,7 +115,7 @@ public class TestServer extends EchoServiceGrpc.EchoServiceImplBase {
             ActiveTest new_test = new ActiveTest();
             ArrayList<Integer> iter = test_map.get(id).getArray();
             iter.forEach(i -> {
-                System.out.println("added questin");
+                //System.out.println("added questin");
                 Question tmp = que_map.get(i);
                 new_test.addQuestion(tmp);
             });
@@ -132,7 +132,11 @@ public class TestServer extends EchoServiceGrpc.EchoServiceImplBase {
         int id = request.getClientId();
         QuestionResponse.Builder builder = QuestionResponse.newBuilder();
         if(active_test.containsKey(id) == true){
+            ActiveTest ir = active_test.get(id);
+            while(ir.peekQuestion().getVariants().size() == 0 && ir.peekQuestion() != null)
+                ir.nextQuestion();
             Question tmp = active_test.get(id).peekQuestion();
+            
             if(tmp == null){
                 builder.setName("No question left behind");
             } else {

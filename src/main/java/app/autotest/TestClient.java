@@ -28,7 +28,7 @@ public class TestClient {
         if(req[0].equals("addt") && req.length == 2){
             AddTestRequest request = AddTestRequest.newBuilder().setId(0).setName(req[1]).build();
             IdResponse response = client.addtest(request);
-            System.out.println("test id: "+ response.getId());
+            System.out.println("Test id: "+ response.getId());
         } else if (req[0].equals("addq") && req.length == 2){
             int test_id = -1;
             try{
@@ -40,13 +40,13 @@ public class TestClient {
             String ques_text = console.nextLine();
             AddQuesRequest request = AddQuesRequest.newBuilder().setId(0).setTestId(test_id).setName(ques_text).build();
             IdResponse response = client.addques(request);
-            System.out.println("question id: "+ response.getId());
+            System.out.println("Question id: "+ response.getId());
         } else if (req[0].equals("seet")){
             NullRequest request = NullRequest.newBuilder().build();
             TestResponse response = client.seetest(request);
             int size = response.getNameCount();
             for(int i = 0; i < size; ++i){
-                System.out.println("name: " + response.getName(i) + " id: " + response.getTestId(i));
+                System.out.println("Id: " + response.getTestId(i) + " Name: " + response.getName(i));
             }
         } else if (req[0].equals("adda")){
             int quest_id = -1;
@@ -94,7 +94,10 @@ public class TestClient {
 
             AddAnswRequest request = builder.build();
             IdResponse response = client.addansw(request);
-            System.out.println("response: "+ response.getId());
+            if(response.getId() == 0)
+                System.out.println("Added");
+            else
+                System.out.println("Error");
         } else if (req[0].equals("start")){
             int test_id = -1;
             try{
@@ -124,7 +127,7 @@ public class TestClient {
                 System.out.println("Question: " + response.getName());
                 int size = response.getAnswNameCount();
                 for(int i = 0; i < size; ++i){
-                    System.out.println(response.getAnswName(i) + " " + response.getAnswId(i));
+                    System.out.println("Id: " + response.getAnswId(i) + " Text: " + response.getAnswName(i));
                 }
             }
         } else if (req[0].equals("answer")){
@@ -148,7 +151,7 @@ public class TestClient {
 
             IdResponse response = client.answer(request);
             if(response.getId() != 0)
-                System.out.println("Negative number");
+                System.out.println("Error");
         } else if(req[0].equals("finish")){
             FinishRequest request = FinishRequest.newBuilder().setClientId(local_id).build();
             FinishResponse response = client.finish(request);
@@ -158,8 +161,6 @@ public class TestClient {
             else
                 System.out.println("Your score: " + score);
         }
-
-
         return 0;
     }
 

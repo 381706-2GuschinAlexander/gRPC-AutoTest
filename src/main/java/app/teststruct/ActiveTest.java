@@ -49,8 +49,8 @@ public class ActiveTest{
             Question corr = question_que.peek();
             score += corr.answerQuestion(arr);
             nextQuestion();
-        } else 
-            System.out.println("Empty");
-        System.out.println(score);
+        } //else 
+           // System.out.println("Empty");
+        //System.out.println(score);
     }
 }
