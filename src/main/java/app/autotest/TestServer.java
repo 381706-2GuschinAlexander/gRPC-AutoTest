@@ -82,10 +82,9 @@ public class TestServer extends EchoServiceGrpc.EchoServiceImplBase {
             int size = request.getNameCount();
             for(int i = 0; i < size; ++i){
                 String name = request.getName(i);
-                boolean isTrue = request.getIsTrue(i);
                 int pointTaken = request.getPointTaken(i);
                 int pointSkip = request.getPointSkiped(i);
-                que_map.get(question_id).add(new Answer(name,isTrue,pointTaken,pointSkip));
+                que_map.get(question_id).add(new Answer(name,pointTaken,pointSkip));
             }
         }
         IdResponse response = IdResponse.newBuilder().setId(return_id).build();
@@ -133,7 +132,7 @@ public class TestServer extends EchoServiceGrpc.EchoServiceImplBase {
         QuestionResponse.Builder builder = QuestionResponse.newBuilder();
         if(active_test.containsKey(id) == true){
             ActiveTest ir = active_test.get(id);
-            while(ir.peekQuestion().getVariants().size() == 0 && ir.peekQuestion() != null)
+            while(ir.peekQuestion() != null && ir.peekQuestion().getVariants().size() == 0)
                 ir.nextQuestion();
             Question tmp = active_test.get(id).peekQuestion();
             
