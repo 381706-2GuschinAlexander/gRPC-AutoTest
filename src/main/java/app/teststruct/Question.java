@@ -31,7 +31,7 @@ public final class Question{
         Collections.sort(arr);
         
         for(int i = 0; i < variants.size(); ++i){
-            if(k < arr.size() && arr.indexOf(k) == i){
+            if(k < arr.size() && arr.get(k) == i){
                 res += variants.get(i).chose(true);
                 k++;
             }
